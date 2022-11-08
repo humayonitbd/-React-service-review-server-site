@@ -33,6 +33,7 @@ async function dbConnect(){
 }
 dbConnect();
 const servicesConnection = client.db('services-reviews').collection('services');
+const reviewConnection = client.db('services-reviews').collection('reviewMessage');
 
 //service data load home page
 app.get('/services', async(req, res)=>{
@@ -78,6 +79,44 @@ app.get('/allService/:id', async(req, res)=>{
     }
 })
 
+
+//review message post 
+app.post('/reviewMessage', async(req, res)=>{
+    try {
+        const body = req.body;
+        const review = await reviewConnection.insertOne(body);
+        if(review.insertedId){
+            res.send({
+                success: true,
+                message: 'Thanks for product review !!'
+            })
+        }else{
+            res.send({
+                success: false,
+                error: 'Faild! your review, please try !!'
+            })
+        }
+
+        
+    } catch (error) {
+        console.log(error.message)
+        
+    }
+})
+
+//review message get all post
+app.get('/reviewMessage', async(req, res)=>{
+    try {
+        const query = {};
+        const cursor = reviewConnection.find(query);
+        const reviewData = await cursor.toArray();
+        res.send(reviewData);
+        
+    } catch (error) {
+        console.log(error.message)
+        
+    }
+}) 
 
 
 
