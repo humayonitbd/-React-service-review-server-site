@@ -72,6 +72,30 @@ app.get('/services', async(req, res)=>{
     }
 })
 
+//service post 
+app.post('/services', async(req, res)=>{
+    try {
+        const service = req.body;
+        const result = await servicesConnection.insertOne(service);
+        if(result.insertedId){
+            res.send({
+                success: true,
+                message: 'Successfully added product!!'
+            })
+        }else{
+            res.send({
+                success: false,
+                error: 'Faild!! do not  added product!!'
+            })
+        }
+        
+    } catch (error) {
+        console.log(error.message)
+        
+    }
+
+})
+
 //service all data load service page 
 app.get('/allService', async(req, res)=>{
     try {
@@ -125,6 +149,8 @@ app.post('/reviewMessage', async(req, res)=>{
         
     }
 })
+
+
 
 //review message get all post
 app.get('/reviewMessage', verifyJWT, async(req, res)=>{
@@ -193,6 +219,55 @@ app.get('/reviewMessage', verifyJWT, async(req, res)=>{
 
 
  })
+
+
+ //one review data get 
+ app.get('/reviewMessageSingle/:id', async(req, res)=>{
+    try {
+        const id = req.params.id;
+        console.log(id)
+        const query = {_id: ObjectId(id)}
+        const result = await reviewConnection.findOne(query);
+        res.send(result)
+
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+ })
+
+
+ //update review 
+ app.put('/reviewMessage/:id', async(req, res)=>{
+    try {
+        const body = req.body;
+        const id = req.params.id;
+        const query = {_id: ObjectId(id)}
+        const updateData = {
+            $set:{
+                review: body.review 
+            }
+        }
+        const updateReview = await reviewConnection.updateOne(query, updateData)
+        if(updateReview.modifiedCount){
+            res.send({
+                success: true,
+                message: 'Successfull updated your review'
+            })
+        }else{
+            res.send({
+                success: false,
+                error: 'Do not  updated your review'
+            })
+
+        }
+    } catch (error) {
+        console.log(error.message)
+        
+    }
+ })
+
+
 
 //  jwt token post
 app.post('/jwt', (req, res)=>{
