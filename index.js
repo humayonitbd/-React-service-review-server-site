@@ -155,7 +155,7 @@ app.post('/reviewMessage', async(req, res)=>{
 //review message get all post
 app.get('/reviewMessage', verifyJWT, async(req, res)=>{
     try {
-        // console.log(req.headers)
+       
         const decoded = req.decoded;
         if(decoded.email !== req.query.email){
             res.status(403).send({message: 'unauthorized access!'})
@@ -169,6 +169,7 @@ app.get('/reviewMessage', verifyJWT, async(req, res)=>{
         }
         const cursor = reviewConnection.find(query);
         const reviewData = await cursor.toArray();
+        console.log(reviewData)
         res.send(reviewData);
         
     } catch (error) {
